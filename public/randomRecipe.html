@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Recipe Pages</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        img { max-width: 300px; }
+        .recipe { margin-top: 20px; }
+        button { padding: 10px; background-color: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+    <h1>Random Recipe</h1>
+    <div id="recipe-container">
+        <p>Loading...</p>
+    </div>
+    <button id="favorite-btn" style="display: none;">Add to Favorites</button>
+    <br><br>
+    <a href="favorites.html">Go to Favorites</a>
+    <a href="index.html">Go to Home</a>
+
+    <script>
+        let currentRecipe = null; // Store the current recipe for the favorite button
+
+        async function fetchRandomRecipe() {
+            try {
+                const response = await fetch('/recipeRouter/random');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const recipe = await response.json();
+                currentRecipe = recipe; // Save recipe for favorite button
+                displayRecipe(recipe);
+                document.getElementById('favorite-btn').style.display = 'block'; // Show button
+            } catch (error) {
+                console.error('Error fetching recipe:', error);
+                document.getElementById('recipe-container').innerHTML = '<p>Error loading recipe</p>';
+            }
+        }
+
+        function displayRecipe(recipe) {
+            const container = document.getElementById('recipe-container');
+            container.innerHTML = `
+                <h2>${recipe.title}</h2>
+                <img src="${recipe.image}" alt="${recipe.title}">
+                <p><strong>Servings:</strong> ${recipe.servings}</p>
+                <p><strong>Ready in:</strong> ${recipe.readyInMinutes} minutes</p>
+                <h3>Ingredients:</h3>
+                <ul>
+                    ${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+                </ul>
+                <h3>Instructions:</h3>
+                <p>${recipe.instructions || 'No instructions provided'}</p>
+            `;
+        }
+
+        // Add to favorites
+        document.getElementById('favorite-btn').addEventListener('click', async () => {
+            if (!currentRecipe) return;
+            try {
+                const response = await fetch('/recipeRouter/favorites', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentRecipe)
+                });
+                if (response.ok) {
+                    alert('Recipe added to favorites!');
+                } else {
+                    throw new Error('Failed to add to favorites');
+                }
+            } catch (error) {
+                console.error('Error adding to favorites:', error);
+                alert('Error adding to favorites');
+            }
+        });
+
+        // Fetch recipe when the page loads
+        fetchRandomRecipe();
+    </script>
+</body>
+</html>

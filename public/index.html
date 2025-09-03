@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Pages</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        #results { margin: 20px; }
+        .recipe-card { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+        .recipe-card img { max-width: 200px; }
+        .recipe-card h3 { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Flaver-Table</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="randomRecipe.html">Random Recipe</a></li>
+                <li><a href="faverte.html">Favorites</a></li>
+            </ul>
+        </nav>
+        <a class="cta" href="#"><button>Sign Up</button></a>
+    </header>
+
+    <div class="backgroud">
+        <img src="./images/background.jpg" alt="Background">
+        <div class="search">
+            <h1>Search Recipes by Ingredients</h1>
+            <input type="text" id="ingredientInput" placeholder="e.g. chicken, rice, tomato" />
+            <button onclick="searchRecipes()">Search</button>
+        </div>
+    </div>
+
+    <div id="results"></div>
+
+    <script src="./javascript/app.js"></script>
+</body>
+</html>

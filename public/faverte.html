@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        img { max-width: 200px; }
+        .recipe { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>My Favorite Recipes</h1>
+    <div id="favorites-container">
+        <p>Loading favorites...</p>
+    </div>
+    <a href="index.html">Go to Random Recipe</a>
+
+    <script>
+        async function fetchFavorites() {
+            try {
+                const response = await fetch('/recipeRouter/favorites');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const favorites = await response.json();
+                displayFavorites(favorites);
+            } catch (error) {
+                console.error('Error fetching favorites:', error);
+                document.getElementById('favorites-container').innerHTML = '<p>Error loading favorites</p>';
+            }
+        }
+
+        function displayFavorites(favorites) {
+            const container = document.getElementById('favorites-container');
+            if (favorites.length === 0) {
+                container.innerHTML = '<p>No favorite recipes yet.</p>';
+                return;
+            }
+            container.innerHTML = favorites.map(recipe => `
+                <div class="recipe">
+                    <h2>${recipe.title}</h2>
+                    <img src="${recipe.image}" alt="${recipe.title}">
+                    <p><strong>Servings:</strong> ${recipe.servings}</p>
+                    <p><strong>Ready in:</strong> ${recipe.readyInMinutes} minutes</p>
+                    <h3>Ingredients:</h3>
+                    <ul>
+                        ${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+                    </ul>
+                    <h3>Instructions:</h3>
+                    <p>${recipe.instructions || 'No instructions provided'}</p>
+                </div>
+            `).join('');
+        }
+
+        // Fetch favorites when the page loads
+        fetchFavorites();
+    </script>
+</body>
+</html>
